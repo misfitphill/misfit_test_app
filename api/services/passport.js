@@ -282,27 +282,21 @@ passport.loadStrategies = function () {
   Object.keys(strategies).forEach(function (key) {
     var options = { passReqToCallback: true }, Strategy;
 
-    if (key === 'local') {
-      // Since we need to allow users to login using both usernames as well as
-      // emails, we'll set the username field to something more generic.
-      _.extend(options, { usernameField: 'identifier' });
-
-      //Let users override the username and passwordField from the options
-      _.extend(options, strategies[key].options || {});
-
-      // Only load the local strategy if it's enabled in the config
-      if (strategies.local) {
-        Strategy = strategies[key].strategy;
-
-        self.use(new Strategy(options, self.protocols.local.login));
-      }
-    } else if (key === 'bearer') {
-      
-      if (strategies.bearer) {
-        Strategy = strategies[key].strategy;
-        self.use(new Strategy(self.protocols.bearer.authorize));
-      }
-      
+    } if (key === 'misfit'){
+          Strategy = strategies[key].strategy;
+          self.use(new Strategy(
+            strategies[key].options,
+            function(accessToken, refreshToken, profile, done) {
+              Passport.findOne({ accessToken: token }, function(err, passport) {
+                if (err) { return done(err); }
+                if (!passport) { return done(null, false); }
+                User.findById(passport.user, function(err, user) {
+                  if (err) { return done(err); }
+                  if (!user) { return done(null, false); }
+                  return done(null, user, { scope: 'all' });
+                });
+              });
+            }));
     } else {
       var protocol = strategies[key].protocol
         , callback = strategies[key].callback;

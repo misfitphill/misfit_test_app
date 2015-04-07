@@ -36,14 +36,16 @@ var AuthController = {
 
     // Get a list of available providers for use in your templates.
     Object.keys(strategies).forEach(function (key) {
-      if (key === 'local') {
-        return;
-      }
+      //if (key === 'local') {
+      //  return;
+      //}
 
       providers[key] = {
         name: strategies[key].name
       , slug: key
       };
+
+      //sails.log.error('providers:  ' + providers[key].name);
     });
 
     // Render the `auth/login.ext` view
@@ -159,6 +161,8 @@ var AuthController = {
       if (err || !user) {
         return tryAgain(challenges);
       }
+
+      req.flash('')
 
       req.login(user, function (err) {
         if (err) {

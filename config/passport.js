@@ -15,21 +15,16 @@
  */
 
 module.exports.passport = {
-  local: {
-    strategy: require('passport-local').Strategy
-  },
-
-  bearer: {
-    strategy: require('passport-http-bearer').Strategy
-  },
 
   misfit: {
     name: 'Misfit',
     protocol: 'oauth2',
     strategy: require('passport-misfit').Strategy,
     options: {
-      consumerKey: 'your-consumer-key',
-      consumerSecret: 'your-consumer-secret'
-    }
+      clientID: 'SPCYUQkvTZi8ZZ2D',
+      clientSecret: 'AGJpFkCOMUaxT2Mx1sJZt5snzQBKtWPT',
+      callbackURL: 'http://54.69.143.157:1337/auth/misfit/callback'
+    },
+    scope: ['user']
   }
 };
