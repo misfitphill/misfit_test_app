@@ -282,12 +282,15 @@ passport.loadStrategies = function () {
   Object.keys(strategies).forEach(function (key) {
     var options = { passReqToCallback: true }, Strategy;
 
-    } if (key === 'misfit'){
+    if (key === 'misfit'){
           Strategy = strategies[key].strategy;
           self.use(new Strategy(
             strategies[key].options,
             function(accessToken, refreshToken, profile, done) {
-              Passport.findOne({ accessToken: token }, function(err, passport) {
+              User.findOrCreate({userId: profile.id}, function(err, user){
+                return done(err, user);
+              });
+              /*Passport.findOne({ accessToken: token }, function(err, passport) {
                 if (err) { return done(err); }
                 if (!passport) { return done(null, false); }
                 User.findById(passport.user, function(err, user) {
@@ -295,7 +298,7 @@ passport.loadStrategies = function () {
                   if (!user) { return done(null, false); }
                   return done(null, user, { scope: 'all' });
                 });
-              });
+              });*/
             }));
     } else {
       var protocol = strategies[key].protocol

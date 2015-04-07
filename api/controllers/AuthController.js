@@ -159,6 +159,7 @@ var AuthController = {
 
     passport.callback(req, res, function (err, user, challenges, statuses) {
       if (err || !user) {
+        sails.log.error('tryAgain: ' + err + " :: " + user);
         return tryAgain(challenges);
       }
 
@@ -166,6 +167,7 @@ var AuthController = {
 
       req.login(user, function (err) {
         if (err) {
+          sails.log.error('tryAgain: err');
           return tryAgain(err);
         }
         
